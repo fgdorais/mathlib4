@@ -521,10 +521,10 @@ def singleOneRingHom : R →+* R[M] where
 
 /-- If two ring homomorphisms from `R[M]` are equal on all `single a 1` and `single 1 b`,
 then they are equal. -/
-@[to_additive (dont_translate := R)
+@[to_additive (dont_translate := R S)
 /-- If two ring homomorphisms from `R[M]` are equal on all `single a 1` and `single 0 b`,
 then they are equal. -/]
-lemma ringHom_ext {f g : R[M] →+* R}
+lemma ringHom_ext [Semiring S] {f g : R[M] →+* S}
     (h₁ : ∀ r, f (single 1 r) = g (single 1 r)) (h_of : ∀ m, f (single m 1) = g (single m 1)) :
     f = g :=
   RingHom.coe_addMonoidHom_injective <| addMonoidHom_ext fun m r ↦ by
@@ -535,8 +535,9 @@ and `single 1 b`, then they are equal.
 
 See note [partially-applied ext lemmas]. -/
 @[ext high]
-lemma ringHom_ext' {f g : R[M] →+* R} (h₁ : f.comp singleOneRingHom = g.comp singleOneRingHom)
-    (h_of : (f : R[M] →* R).comp (of R M) = (g : R[M] →* R).comp (of R M)) : f = g :=
+lemma ringHom_ext' [Semiring S] {f g : R[M] →+* S}
+    (h₁ : f.comp singleOneRingHom = g.comp singleOneRingHom)
+    (h_of : (f : R[M] →* S).comp (of R M) = (g : R[M] →* S).comp (of R M)) : f = g :=
   ringHom_ext (by simpa [DFunLike.ext_iff] using h₁) (by simpa [DFunLike.ext_iff] using h_of)
 
 end MulOneClass
@@ -750,9 +751,9 @@ and `single 0 b`, then they are equal.
 
 See note [partially-applied ext lemmas]. -/
 @[ext high]
-theorem ringHom_ext' [AddMonoid M] {f g : R[M] →+* R}
+theorem ringHom_ext' [Semiring S] [AddMonoid M] {f g : R[M] →+* S}
     (h₁ : f.comp singleZeroRingHom = g.comp singleZeroRingHom)
-    (h_of : (f : R[M] →* R).comp (of R M) = (g : R[M] →* R).comp (of R M)) :
+    (h_of : (f : R[M] →* S).comp (of R M) = (g : R[M] →* S).comp (of R M)) :
     f = g :=
   ringHom_ext (RingHom.congr_fun h₁) (DFunLike.congr_fun h_of)
 
