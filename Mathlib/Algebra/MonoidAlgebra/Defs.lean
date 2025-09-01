@@ -133,7 +133,7 @@ lemma ofCoeff_inj {x y : M →₀ R} : ofCoeff x = ofCoeff y ↔ x = y := coeffE
   coeffEquiv.nontrivial
 @[to_additive] instance unique [Subsingleton R] : Unique R[M] := coeffEquiv.unique
 @[to_additive] instance addCommMonoid : AddCommMonoid R[M] :=
-  coeffEquiv.addCommMonoid
+  fast_instance% coeffEquiv.addCommMonoid
 @[to_additive] instance instIsCancelAdd [IsCancelAdd R] : IsCancelAdd R[M] :=
   coeffEquiv.isCancelAdd
 
@@ -156,8 +156,8 @@ Further results on scalar multiplication can be found in
 
 variable {A : Type*} [SMulZeroClass A R]
 
-@[to_additive smulZeroClass]
-instance smulZeroClass : SMulZeroClass A R[M] := coeffEquiv.smulZeroClass _
+@[to_additive (dont_translate := A) smulZeroClass]
+instance smulZeroClass : SMulZeroClass A R[M] := fast_instance% coeffEquiv.smulZeroClass _
 
 @[to_additive (attr := simp) (dont_translate := A) coeff_smul]
 lemma coeff_smul (a : A) (x : R[M]) : coeff (a • x) = a • coeff x := rfl
@@ -175,8 +175,9 @@ lemma smul_single' (r' : R) (m : M) (r : R) : r' • single m r = single m (r' *
 @[to_additive (attr := deprecated coeff_smul (since := "2025-08-15")) (dont_translate := A)]
 lemma smul_apply (r : A) (m : M) (x : R[M]) : (r • x).coeff m = r • x.coeff m := rfl
 
-@[to_additive distribSMul]
-instance distribSMul [DistribSMul N R] : DistribSMul N R[M] := coeffEquiv.distribSMul _
+@[to_additive (dont_translate := N) distribSMul]
+instance distribSMul [DistribSMul N R] : DistribSMul N R[M] :=
+  fast_instance% coeffEquiv.distribSMul _
 
 @[to_additive (dont_translate := N) isScalarTower]
 instance isScalarTower [SMulZeroClass N R] [SMulZeroClass O R] [SMul N O] [IsScalarTower N O R] :
@@ -633,7 +634,7 @@ section Ring
 variable [Ring R]
 
 @[to_additive (dont_translate := R)]
-instance addCommGroup : AddCommGroup R[M] := coeffEquiv.addCommGroup
+instance addCommGroup : AddCommGroup R[M] := fast_instance% coeffEquiv.addCommGroup
 
 @[to_additive (attr := simp) (dont_translate := R)]
 lemma coeff_neg (x : R[M]) : (-x).coeff = -x.coeff := rfl
