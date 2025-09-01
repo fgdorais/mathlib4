@@ -36,15 +36,6 @@ When the domain is multiplicative, e.g. a group, this will be used to define the
 ## Notation
 
 We introduce the notation `R[A]` for `AddMonoidAlgebra R A`.
-
-## Implementation note
-Unfortunately because additive and multiplicative structures both appear in both cases,
-it doesn't appear to be possible to make much use of `to_additive`, and we just settle for
-saying everything twice.
-
-Similarly, I attempted to just define
-`k[G] := MonoidAlgebra k (Multiplicative G)`, but the definitional equality
-`Multiplicative G = G` leaks through everywhere, and seems impossible to use.
 -/
 
 assert_not_exists NonUnitalAlgHom AlgEquiv
@@ -746,7 +737,7 @@ theorem induction_on [AddMonoid M] {p : R[M] → Prop} (x : R[M])
 
 /-! #### Algebra structure -/
 
-/-- If two ring homomorphisms from `k[G]` are equal on all `single a 1`
+/-- If two ring homomorphisms from `R[M]` are equal on all `single a 1`
 and `single 0 b`, then they are equal.
 
 See note [partially-applied ext lemmas]. -/
