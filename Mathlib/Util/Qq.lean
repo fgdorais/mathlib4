@@ -63,7 +63,7 @@ def mkSetLiteralQ {u v : Level} {α : Q(Type u)} (β : Q(Type v))
   | x :: xs => q(Insert.insert $x $(mkSetLiteralQ β xs))
 
 /-- Returns the natural number literal `n` as used in the frontend. It is a `OfNat.ofNat`
-pplication. Recall that all theorems and definitions containing numeric literals are encoded using
+application. Recall that all theorems and definitions containing numeric literals are encoded using
 `OfNat.ofNat` applications in the frontend.
 
 This is a Qq version of `Lean.mkNatLit`. -/
