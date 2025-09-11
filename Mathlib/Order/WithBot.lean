@@ -252,17 +252,15 @@ lemma le_def : x ≤ y ↔ ∀ a : α, x = ↑a → ∃ b : α, y = ↑b ∧ a �
 
 lemma not_coe_le_bot (a : α) : ¬(a : WithBot α) ≤ ⊥ := by simp [le_def]
 
-instance orderBot : OrderBot (WithBot α) where bot_le := by simp [le_def]
+instance instOrderBot : OrderBot (WithBot α) where bot_le := by simp [le_def]
 
-instance orderTop [OrderTop α] : OrderTop (WithBot α) where le_top x := by cases x <;> simp [le_def]
-
-instance instBoundedOrder [OrderTop α] : BoundedOrder (WithBot α) :=
-  { WithBot.orderBot, WithBot.orderTop with }
+instance instBoundedOrder [OrderTop α] : BoundedOrder (WithBot α) where
+  le_top x := by cases x <;> simp [le_def]
 
 /-- There is a general version `le_bot_iff`, but this lemma does not require a `PartialOrder`. -/
 @[simp]
-protected theorem le_bot_iff : ∀ {a : WithBot α}, a ≤ ⊥ ↔ a = ⊥
-  | (a : α) => by simp [not_coe_le_bot _]
+protected theorem le_bot_iff : ∀ {x : WithBot α}, x ≤ ⊥ ↔ x = ⊥
+  | (a : α) => by simp [not_coe_le_bot]
   | ⊥ => by simp
 
 theorem coe_le : ∀ {o : Option α}, b ∈ o → ((a : WithBot α) ≤ o ↔ a ≤ b)
@@ -277,6 +275,13 @@ protected theorem _root_.IsMax.withBot (h : IsMax a) : IsMax (a : WithBot α) :=
 lemma le_unbot_iff (hy : y ≠ ⊥) : a ≤ unbot y hy ↔ a ≤ y := by lift y to α using id hy; simp
 lemma unbot_le_iff (hx : x ≠ ⊥) : unbot x hx ≤ b ↔ x ≤ b := by lift x to α using id hx; simp
 lemma unbotD_le_iff (hx : x = ⊥ → a ≤ b) : x.unbotD a ≤ b ↔ x ≤ b := by cases x <;> simp [hx]
+
+@[simp] lemma unbot_le_unbot (hx hy) : unbot x hx ≤ unbot y hy ↔ x ≤ y := by
+  -- TODO: Fix `lift` so that it doesn't try to clear the hypotheses I give it when it is
+  -- impossible to do so. See https://github.com/leanprover-community/mathlib4/issues/19160
+  lift x to α using id hx
+  lift y to α using id hy
+  simp
 
 end LE
 
@@ -311,14 +316,21 @@ lemma lt_unbot_iff (hy : y ≠ ⊥) : a < unbot y hy ↔ a < y := by lift y to �
 lemma unbot_lt_iff (hx : x ≠ ⊥) : unbot x hx < b ↔ x < b := by lift x to α using id hx; simp
 lemma unbotD_lt_iff (hx : x = ⊥ → a < b) : x.unbotD a < b ↔ x < b := by cases x <;> simp [hx]
 
+@[simp] lemma unbot_lt_unbot (hx hy) : unbot x hx < unbot y hy ↔ x < y := by
+  -- TODO: Fix `lift` so that it doesn't try to clear the hypotheses I give it when it is
+  -- impossible to do so. See https://github.com/leanprover-community/mathlib4/issues/19160
+  lift x to α using id hx
+  lift y to α using id hy
+  simp
+
 end LT
 
-instance preorder [Preorder α] : Preorder (WithBot α) where
+instance instPreorder [Preorder α] : Preorder (WithBot α) where
   lt_iff_le_not_ge x y := by cases x <;> cases y <;> simp [lt_iff_le_not_ge]
   le_refl x := by cases x <;> simp [le_def]
   le_trans x y z := by cases x <;> cases y <;> cases z <;> simp [le_def]; simpa using le_trans
 
-instance partialOrder [PartialOrder α] : PartialOrder (WithBot α) where
+instance instPartialOrder [PartialOrder α] : PartialOrder (WithBot α) where
   le_antisymm x y := by cases x <;> cases y <;> simp [le_def]; simpa using le_antisymm
 
 section Preorder
