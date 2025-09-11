@@ -75,7 +75,7 @@ def evalFinsetIccNat (m n : ℕ) (em en : Q(ℕ)) :
   if m = n then
     have : $em =Q $en := ⟨⟩
     return ⟨q({$em}), q(Icc_self _)⟩
-  -- If `m < n`, then `Icc m n = insert m (Icc m n)`.
+  -- If `m < n`, then `Icc m n = insert m (Icc (m + 1) n)`.
   else if m < n then
     let hmn : Q(Nat.ble $em $en = true) := (q(Eq.refl true) :)
     have em' : Q(ℕ) := mkNatLitQ (m + 1)
