@@ -429,7 +429,7 @@ lemma IsUnit.exists_left_inv {a : M} (h : IsUnit a) : ∃ b, b * a = 1 := by
 
 variable (M) in
 /-- A monoid is sharp iff its only unit is `1`. -/
-@[to_additive "A monoid is sharp iff its only unit is `0`."]
+@[to_additive /-- A monoid is sharp iff its only unit is `0`. -/]
 abbrev IsSharpMonoid := Subsingleton Mˣ
 
 @[to_additive] lemma IsSharpMonoid.of_isUnit (h : ∀ a : M, IsUnit a → a = 1) : IsSharpMonoid M :=
