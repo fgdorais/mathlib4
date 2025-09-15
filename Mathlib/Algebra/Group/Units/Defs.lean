@@ -18,7 +18,7 @@ An element of a `Monoid` is a unit if it has a two-sided inverse.
 For both declarations, there is an additive counterpart: `AddUnits` and `IsAddUnit`.
 See also `Prime`, `Associated`, and `Irreducible` in `Mathlib/Algebra/Associated.lean`.
 
-We also define `IsSharpMonoid`, a predicate for a monoid to be sharp, ie have a single unit.
+We also define `IsSharpMonoid`, a predicate for a monoid to be sharp, i.e. have a single unit.
 
 ## Notation
 
