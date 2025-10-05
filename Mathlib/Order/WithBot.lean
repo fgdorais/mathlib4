@@ -238,15 +238,17 @@ section LE
 variable [LE α] {x y : WithBot α}
 
 /-- The order on `WithBot α`, defined by `⊥ ≤ ⊥`, `⊥ ≤ ↑a` and `a ≤ b → ↑a ≤ ↑b`. -/
-instance (priority := 10) instLE : LE (WithBot α) where
-  le
-  | ⊥, ⊥ => True
-  | (a : α), ⊥ => False
-  | ⊥, (b : α) => True
-  | (a : α), (b : α) => a ≤ b
+@[mk_iff le_def_aux]
+protected inductive LE : WithBot α → WithBot α → Prop
+  | protected bot_le (x : WithBot α) : WithBot.LE ⊥ x
+  | protected coe_le_coe {a b : α} : a ≤ b → WithBot.LE a b
 
-lemma le_def : x ≤ y ↔ ∀ a : α, x = ↑a → ∃ b : α, y = ↑b ∧ a ≤ b := by
-  cases x <;> cases y <;> simp [LE.le]
+instance (priority := 10) instLE : LE (WithBot α) where le := WithBot.LE
+
+lemma le_def : x ≤ y ↔ x = ⊥ ∨ ∃ a b : α, a ≤ b ∧ x = a ∧ y = b := le_def_aux ..
+
+lemma le_iff_exists : x ≤ y ↔ ∀ a : α, x = ↑a → ∃ b : α, y = ↑b ∧ a ≤ b := by
+  cases x <;> cases y <;> simp [le_def]
 
 @[simp, norm_cast] lemma coe_le_coe : (a : WithBot α) ≤ b ↔ a ≤ b := by simp [le_def]
 
@@ -266,8 +268,8 @@ protected theorem le_bot_iff : ∀ {x : WithBot α}, x ≤ ⊥ ↔ x = ⊥
 theorem coe_le : ∀ {o : Option α}, b ∈ o → ((a : WithBot α) ≤ o ↔ a ≤ b)
   | _, rfl => coe_le_coe
 
-theorem coe_le_iff : a ≤ x ↔ ∃ b : α, x = b ∧ a ≤ b := by simp [le_def]
-theorem le_coe_iff : x ≤ b ↔ ∀ a : α, x = ↑a → a ≤ b := by simp [le_def]
+theorem coe_le_iff : a ≤ x ↔ ∃ b : α, x = b ∧ a ≤ b := by simp [le_iff_exists]
+theorem le_coe_iff : x ≤ b ↔ ∀ a : α, x = ↑a → a ≤ b := by simp [le_iff_exists]
 
 protected theorem _root_.IsMax.withBot (h : IsMax a) : IsMax (a : WithBot α) :=
   fun x ↦ by cases x <;> simp; simpa using @h _
@@ -797,16 +799,14 @@ section LE
 variable [LE α] {x y : WithTop α}
 
 /-- The order on `WithTop α`, defined by `⊤ ≤ ⊤`, `↑a ≤ ⊤` and `a ≤ b → ↑a ≤ ↑b`. -/
-instance (priority := 10) instLE : LE (WithTop α) where
-  -- We match on `b, a` rather than `a, b` to keep the defeq with `WithBot.instLE (α := αᵒᵈ)`
-  le a b := match b, a with
-  | ⊤, ⊤ => True
-  | (b : α), ⊤ => False
-  | ⊤, (a : α) => True
-  | (b : α), (a : α) => a ≤ b
+instance (priority := 10) instLE : LE (WithTop α) where le a b := WithBot.LE (α := αᵒᵈ) b a
 
-lemma le_def : x ≤ y ↔ ∀ b : α, y = ↑b → ∃ a : α, x = ↑a ∧ a ≤ b := by
-  cases x <;> cases y <;> simp [LE.le]
+lemma le_def : x ≤ y ↔ y = ⊤ ∨ ∃ a b : α, a ≤ b ∧ x = a ∧ y = b :=
+  WithBot.le_def.trans <| or_congr_right <| exists_swap.trans <| exists₂_congr fun _ _ ↦
+    and_congr_right' and_comm
+
+lemma le_iff_exists : x ≤ y ↔ ∀ b : α, y = ↑b → ∃ a : α, x = ↑a ∧ a ≤ b := by
+  cases x <;> cases y <;> simp [le_def]
 
 @[simp, norm_cast] lemma coe_le_coe : (a : WithTop α) ≤ b ↔ a ≤ b := by simp [le_def]
 
@@ -828,8 +828,8 @@ protected theorem top_le_iff : ∀ {a : WithTop α}, ⊤ ≤ a ↔ a = ⊤
 theorem le_coe : ∀ {o : Option α}, a ∈ o → (@LE.le (WithTop α) _ o b ↔ a ≤ b)
   | _, rfl => coe_le_coe
 
-theorem le_coe_iff : x ≤ b ↔ ∃ a : α, x = a ∧ a ≤ b := by simp [le_def]
-theorem coe_le_iff : ↑a ≤ x ↔ ∀ b : α, x = ↑b → a ≤ b := by simp [le_def]
+theorem le_coe_iff : x ≤ b ↔ ∃ a : α, x = a ∧ a ≤ b := by simp [le_iff_exists]
+theorem coe_le_iff : ↑a ≤ x ↔ ∀ b : α, x = ↑b → a ≤ b := by simp [le_iff_exists]
 
 protected theorem _root_.IsMin.withTop (h : IsMin a) : IsMin (a : WithTop α) :=
   fun x ↦ by cases x <;> simp; simpa using @h _
