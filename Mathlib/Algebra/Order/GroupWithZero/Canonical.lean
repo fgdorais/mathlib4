@@ -257,7 +257,7 @@ variable [LE α] {x y : WithZero α} {a b : α}
 
 instance (priority := 10) le : LE (WithZero α) := WithBot.instLE
 
-lemma le_def : x ≤ y ↔ ∀ a : α, x = ↑a → ∃ b : α, y = ↑b ∧ a ≤ b := WithBot.le_iff_exists
+lemma le_def : x ≤ y ↔ ∀ a : α, x = ↑a → ∃ b : α, y = ↑b ∧ a ≤ b := WithBot.le_iff_forall
 
 @[simp, norm_cast] lemma coe_le_coe : (a : WithZero α) ≤ b ↔ a ≤ b := WithBot.coe_le_coe
 
