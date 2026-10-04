@@ -5,6 +5,7 @@ Authors: Jeremy Avigad, Leonardo de Moura
 -/
 module
 
+import Batteries.Tactic.Alias
 public import Mathlib.Lean.Meta.Simp
 public import Batteries.Logic
 public import Batteries.Util.LibraryNote
